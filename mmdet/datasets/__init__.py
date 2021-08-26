@@ -13,6 +13,7 @@ from .utils import NumClassCheckHook, get_loading_pipeline, replace_ImageToTenso
 from .voc import VOCDataset
 from .wider_face import WIDERFaceDataset
 from .xml_style import XMLDataset
+from .vhrvoc import VhrvocDataset
 
 __all__ = [
     "CustomDataset",
@@ -42,4 +43,5 @@ __all__ = [
     "NumClassCheckHook",
     "CocoPanopticDataset",
     "MultiImageMixDataset",
+    "VhrvocDataset"
 ]
