@@ -1,4 +1,4 @@
-_base_ = './atss_r50_fpn_1x_vhrvoc.py'
+_base_ = './fovea_r50_fpn_4x4_1x_ssdd.py'
 model = dict(
     backbone=dict(
         depth=101,

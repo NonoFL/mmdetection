@@ -1,5 +1,5 @@
 _base_ = [
-    '../_base_/datasets/vhr_detection.py',
+    '../_base_/datasets/vhrvoc_detection.py',
     '../_base_/schedules/schedule_1x.py', '../_base_/default_runtime.py'
 ]
 
@@ -29,7 +29,7 @@ model = dict(
     test_cfg=dict(topk=100, local_maximum_kernel=3, max_per_img=100))
 
 # We fixed the incorrect img_norm_cfg problem in the source code.
-img_norm_cfg = dict(mean=[35.757, 39.758, 39.752], std=[27.732, 27.734, 27.718], to_rgb=True)
+img_norm_cfg = dict(mean=[86.218, 91.479, 81.957], std=[41.654, 39.424, 38.359], to_rgb=True)
 
 train_pipeline = [
     dict(type='LoadImageFromFile', to_float32=True, color_type='color'),
@@ -84,8 +84,8 @@ test_pipeline = [
         ])
 ]
 
-dataset_type = 'VhrDataset'
-data_root = 'data/VHR_coco/'
+dataset_type = 'VhrvocDataset'
+data_root = 'data/VHR_voc/'
 
 # Use RepeatDataset to speed up training
 data = dict(
@@ -97,8 +97,8 @@ data = dict(
         times=5,
         dataset=dict(
             type=dataset_type,
-            ann_file=data_root + 'annotations/train.json',
-            img_prefix=data_root + 'train/',
+            ann_file=data_root + 'ImageSets/Main/train.txt',
+            img_prefix=data_root,
             pipeline=train_pipeline)),
     val=dict(pipeline=test_pipeline),
     test=dict(pipeline=test_pipeline))
@@ -107,9 +107,9 @@ data = dict(
 # Based on the default settings of modern detectors, the SGD effect is better
 # than the Adam in the source code, so we use SGD default settings and
 # if you use adam+lr5e-4, the map is 29.1.
+optimizer = dict(type='SGD', lr=0.005, momentum=0.9, weight_decay=0.0001)
 optimizer_config = dict(
     _delete_=True, grad_clip=dict(max_norm=35, norm_type=2))
-
 # learning policy
 # Based on the default settings of modern detectors, we added warmup settings.
 lr_config = dict(
