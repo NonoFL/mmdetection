@@ -59,7 +59,7 @@ model = dict(
         nms=dict(type='nms', iou_threshold=0.5),
         max_per_img=100))
 img_norm_cfg = dict(
-    mean=[86.218, 91.479, 81.957], std=[1.0, 1.0, 1.0], to_rgb=False)
+    mean=[81.957, 91.479, 86.218], std=[1.0, 1.0, 1.0], to_rgb=False)
 train_pipeline = [
     dict(type='LoadImageFromFile'),
     dict(type='LoadAnnotations', with_bbox=True),

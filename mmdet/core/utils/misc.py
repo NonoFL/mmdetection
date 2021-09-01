@@ -25,7 +25,7 @@ def multi_apply(func, *args, **kwargs):
             a kind of returned results by the function
     """
     pfunc = partial(func, **kwargs) if kwargs else func
-    map_results = map(pfunc, *args)
+    map_results = map(pfunc, *args)                 #python内置map返回的是列表，而six.moves.map返回的是iter
     return tuple(map(list, zip(*map_results)))
 
 
