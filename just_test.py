@@ -1,6 +1,4 @@
 import torch
-from mmdet.models.dense_heads.fcos_head import FCOSHead
-
-self = FCOSHead(11,7)
-feats = [torch.rand(1, 7, s, s) for s in [4, 8, 16, 32, 64]]
-cls_score, bbox_pred, centerness = self.forward(feats)
+cls = torch.tensor([[0.1,0.2,0.3,0.4,0.5,0.6],[0.7,0.6,0.5,0.4,0.3,0.2,0.1]], requires_grad=True)
+G_cls = torch.tensor([[0,0,0,0,1,0], [0,1,0,0,0,0]])
+G_loc = torch.tensor([True])

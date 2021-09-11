@@ -1,7 +1,7 @@
 # We follow the original implementation which
 # adopts the Caffe pre-trained backbone.
 _base_ = [
-    '../_base_/datasets/ssdd_detection.py',
+    '../_base_/datasets/vhrvoc_detection.py',
     '../_base_/schedules/schedule_1x.py', '../_base_/default_runtime.py'
 ]
 model = dict(
@@ -29,7 +29,7 @@ model = dict(
         init_cfg=dict(type='Caffe2Xavier', layer='Conv2d')),
     bbox_head=dict(
         type='AutoAssignHead',
-        num_classes=1,
+        num_classes=10,
         in_channels=256,
         stacked_convs=4,
         feat_channels=256,
@@ -73,15 +73,15 @@ data = dict(
     train=dict(pipeline=train_pipeline),
     val=dict(pipeline=test_pipeline),
     test=dict(pipeline=test_pipeline))
+
 # optimizer
-optimizer = dict(lr=0.01, paramwise_cfg=dict(norm_decay_mult=0.))
+optimizer = dict(lr=0.1, paramwise_cfg=dict(norm_decay_mult=0.))
 # learning policy
 lr_config = dict(
     policy='step',
     warmup='linear',
     warmup_iters=1000,
     warmup_ratio=1.0 / 1000,
-    step=[60, 90])
-# total_epochs = 100
+    step=[333, 458])
 runner = runner = dict(type='EpochBasedRunner', max_epochs=100)
 

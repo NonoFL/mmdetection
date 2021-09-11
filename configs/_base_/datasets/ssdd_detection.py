@@ -29,7 +29,7 @@ test_pipeline = [
     ),
 ]
 data = dict(
-    samples_per_gpu=8,      #batchsize
+    samples_per_gpu=2,      #batchsize
     workers_per_gpu=4,
     train=dict(
         type=dataset_type,

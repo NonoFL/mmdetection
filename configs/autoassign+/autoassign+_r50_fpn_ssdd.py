@@ -5,7 +5,7 @@ _base_ = [
     '../_base_/schedules/schedule_1x.py', '../_base_/default_runtime.py'
 ]
 model = dict(
-    type='AutoAssign',
+    type='AutoAssignPlus',
     backbone=dict(
         type='ResNet',
         depth=50,
@@ -28,7 +28,7 @@ model = dict(
         relu_before_extra_convs=True,
         init_cfg=dict(type='Caffe2Xavier', layer='Conv2d')),
     bbox_head=dict(
-        type='AutoAssignHead',
+        type='AutoAssignPlusHead',
         num_classes=1,
         in_channels=256,
         stacked_convs=4,
