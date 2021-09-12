@@ -1,3 +1,5 @@
+from numpy import square
+from numpy.core.fromnumeric import reshape, squeeze
 from mmdet.models.dense_heads.autoassign_head import AutoAssignHead
 import torch
 import torch.nn as nn
@@ -80,7 +82,7 @@ class CenterPrior(nn.Module):
 
 
 @HEADS.register_module()
-class AutoAssignPlusHead(AutoAssignHead):
+class AutoAssignPlusHead(FCOSHead):
 
     def __init__(self,
                  *args,
@@ -101,6 +103,11 @@ class AutoAssignPlusHead(AutoAssignHead):
         self.center_loss_weight = center_loss_weight
 
     def init_weights(self):
+        """Initialize weights of the head.
+
+        In particular, we have special initialization for classified conv's and
+        regression conv's bias
+        """
 
         super(AutoAssignPlusHead, self).init_weights()
         bias_cls = bias_init_with_prob(0.02)
@@ -151,21 +158,17 @@ class AutoAssignPlusHead(AutoAssignHead):
     def get_pos_loss_single(self, cls_score, objectness, reg_loss, gt_labels,
                             center_prior_weights):
         # p_loc: localization confidence
-        # p_loc = torch.exp(-reg_loss)
-
-        # p_loc = torch.exp(reg_loss-1)
+        p_loc = torch.exp(-reg_loss)
         # p_cls: classification confidence
         p_cls = (cls_score * objectness)[:, gt_labels]
         # p_pos: joint confidence indicator
-        p_pos = p_cls * center_prior_weights
-
-        # B = (p_loc * center_prior_weights) / ((p_loc * center_prior_weights).sum(0, keepdim=True)).clamp(min=EPS)
+        p_pos = p_cls * reg_loss
 
         # 3 is a hyper-parameter to control the contributions of high and
         # low confidence locations towards positive losses.
         confidence_weight = torch.exp(p_pos * 3)
-        p_pos_weight = (confidence_weight * reg_loss) / (
-            (confidence_weight * reg_loss).sum(
+        p_pos_weight = (confidence_weight * center_prior_weights) / (
+            (confidence_weight * center_prior_weights).sum(
                 0, keepdim=True)).clamp(min=EPS)
         reweighted_p_pos = (p_pos * p_pos_weight).sum(0)
         pos_loss = F.binary_cross_entropy(
@@ -174,7 +177,6 @@ class AutoAssignPlusHead(AutoAssignHead):
             reduction='none')
         pos_loss = pos_loss.sum() * self.pos_loss_weight
         return pos_loss,
-
 
     def get_neg_loss_single(self, cls_score, objectness, gt_labels, ious,
                             inside_gt_bbox_mask):
@@ -242,6 +244,7 @@ class AutoAssignPlusHead(AutoAssignHead):
              gt_bboxes_ignore=None):
 
         assert len(cls_scores) == len(bbox_preds) == len(objectnesses)
+        bs = len(cls_scores)
         all_num_gt = sum([len(item) for item in gt_bboxes])
         featmap_sizes = [featmap.size()[-2:] for featmap in cls_scores]
         all_level_points = self.get_points(featmap_sizes, bbox_preds[0].dtype,
@@ -267,10 +270,12 @@ class AutoAssignPlusHead(AutoAssignHead):
 
         reg_loss_list = []
         ious_list = []
+        iou_hou_list = []
         num_points = len(mlvl_points)
         iou_weight_list = []
-        for bbox_pred, gt_bboxe, inside_gt_bbox_mask in zip(
-                bbox_preds, bbox_targets_list, inside_gt_bbox_mask_list):
+        bbox_loss = 0
+        for bbox_pred, gt_bboxe, inside_gt_bbox_mask,center_prior_weight in zip(
+                bbox_preds, bbox_targets_list, inside_gt_bbox_mask_list,center_prior_weight_list):
             temp_num_gt = gt_bboxe.size(1)
             expand_mlvl_points = mlvl_points[:, None, :].expand(
                 num_points, temp_num_gt, 2).reshape(-1, 2)
@@ -320,31 +325,46 @@ class AutoAssignPlusHead(AutoAssignHead):
                     point_in_iou = a & b & c & d     
                     qaq = i % temp_num_gt
                     iou_weight[:,qaq] += point_in_iou.long()
-            iou_weight =  iou_weight / iou_weight.max(dim=0).values   
+            # iou_weight =  iou_weight / max(iou_weight.max(dim=0).values, torch.ones((temp_num_gt,1)))   
+            iou_weight =  iou_weight / iou_weight.max(dim=0).values
             iou_weight_list.append(iou_weight)       #代替reg_loss_list
+            
+            iou = (iou_weight).reshape(-1,1).squeeze(1)
+            loss_bbox = loss_bbox[iou>0]
+            pos_num = len(loss_bbox)
+            bbox_loss = bbox_loss + sum(loss_bbox) / pos_num     
 
-        # iou_weight_list 与 center_prior_weight_list loss：
-        loss_iou_G = 0
-        # for i in range(center_prior_weight.shape[1]):
+            #指导cls的iou
+            iou = (iou_weight.sum(1).reshape(-1,1)).squeeze()
+            iou = iou * (center_prior_weight.sum(1)).reshape(-1,1).squeeze()
+            iou_gt0 = sum(iou>0)
+            pos_num = round(iou_gt0*0.2)
 
-
-
-
+                   
+        bbox_loss = bbox_loss / bs
         cls_scores = [item.sigmoid() for item in cls_scores]
         objectnesses = [item.sigmoid() for item in objectnesses]
+
+
+
+        
+
+
+
+
         # pos_loss_list, = multi_apply(self.get_pos_loss_single, cls_scores,
         #                              objectnesses, reg_loss_list, gt_labels,
         #                              center_prior_weight_list)
-        pos_loss_list, = multi_apply(self.get_pos_loss_single, cls_scores,
-                                     objectnesses, iou_weight_list, gt_labels,
-                                     center_prior_weight_list)
-        pos_avg_factor = reduce_mean(
-            bbox_pred.new_tensor(all_num_gt)).clamp_(min=1)
-        pos_loss = sum(pos_loss_list) / pos_avg_factor
+        # pos_loss_list, = multi_apply(self.get_pos_loss_single, cls_scores,
+        #                              objectnesses, iou_weight_list, gt_labels,
+        #                              center_prior_weight_list)
+        # pos_avg_factor = reduce_mean(
+        #     bbox_pred.new_tensor(all_num_gt)).clamp_(min=1)
+        # pos_loss = sum(pos_loss_list) / pos_avg_factor
 
-        neg_loss_list, = multi_apply(self.get_neg_loss_single, cls_scores,
-                                     objectnesses, gt_labels, ious_list,
-                                     inside_gt_bbox_mask_list)
+        # neg_loss_list, = multi_apply(self.get_neg_loss_single, cls_scores,
+        #                              objectnesses, gt_labels, ious_list,
+        #                              inside_gt_bbox_mask_list)
         neg_avg_factor = sum(item.data.sum()
                              for item in center_prior_weight_list)
         neg_avg_factor = reduce_mean(neg_avg_factor).clamp_(min=1)
