@@ -37,6 +37,7 @@ from .yolof import YOLOF
 from .yolox import YOLOX
 from .autoassignplus import AutoAssignPlus
 from .retinanet_p import RetinaNetPlus
+from .lll import LLL
 __all__ = [
     'ATSS', 'BaseDetector', 'SingleStageDetector', 'TwoStageDetector', 'RPN',
     'KnowledgeDistillationSingleStageDetector', 'FastRCNN', 'FasterRCNN',
@@ -45,5 +46,5 @@ __all__ = [
     'NASFCOS', 'PointRend', 'GFL', 'CornerNet', 'PAA', 'YOLOV3', 'YOLACT',
     'VFNet', 'DETR', 'TridentFasterRCNN', 'SparseRCNN', 'SCNet',
     'DeformableDETR', 'AutoAssign', 'YOLOF', 'CenterNet', 'YOLOX',
-    'TwoStagePanopticSegmentor', 'PanopticFPN', 'AutoAssignPlus', 'RetinaNetPlus'
+    'TwoStagePanopticSegmentor', 'PanopticFPN', 'AutoAssignPlus', 'RetinaNetPlus', 'LLL'
 ]

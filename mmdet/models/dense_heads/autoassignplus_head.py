@@ -311,7 +311,7 @@ class AutoAssignPlusHead(FCOSHead):
             iou_weight = torch.zeros((num_points, temp_num_gt)).type_as(loss_bbox)
             iou_in = torch.zeros((1,temp_num_gt)).type_as(loss_bbox)
             for i,iou, decoded_bbox_pred, decoded_target_pred in zip(range(ious_hou.shape[0]),ious_hou, decoded_bbox_preds, decoded_target_preds):
-                if iou > 0:
+                if iou > 0.2:
                     x1 = max(decoded_bbox_pred[0], decoded_target_pred[0])
                     y1 = max(decoded_bbox_pred[1], decoded_target_pred[1])
                     x2 = min(decoded_bbox_pred[2], decoded_target_pred[2])
