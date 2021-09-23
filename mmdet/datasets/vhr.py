@@ -21,14 +21,14 @@ class VhrDataset(CustomDataset):
 
     CLASSES = (
         "airplane",
-        "ship",
-        "storage tank",
         "baseball diamond",
         "tennis court",
         "basketball court",
         "ground track field",
-        "harbor",
         "bridge",
+        "harbor",
+        "ship",
+        "storage tank",
         "vehicle",
     )
 

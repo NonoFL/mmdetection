@@ -1,56 +1,65 @@
-# We follow the original implementation which
-# adopts the Caffe pre-trained backbone.
 _base_ = [
-    '../_base_/datasets/vhrvoc_detection.py',
+    '../_base_/datasets/ssdd_detection.py',
     '../_base_/schedules/schedule_1x.py', '../_base_/default_runtime.py'
 ]
+# model settings
 model = dict(
-    type='AutoAssignPlus',
+    type='VFNet',
     backbone=dict(
         type='ResNet',
         depth=50,
         num_stages=4,
         out_indices=(0, 1, 2, 3),
         frozen_stages=1,
-        norm_cfg=dict(type='BN', requires_grad=False),
+        norm_cfg=dict(type='BN', requires_grad=True),
         norm_eval=True,
-        style='caffe',
-        init_cfg=dict(
-            type='Pretrained',
-            checkpoint='open-mmlab://detectron2/resnet50_caffe')),
+        style='pytorch',
+        init_cfg=dict(type='Pretrained', checkpoint='torchvision://resnet50')),
     neck=dict(
         type='FPN',
         in_channels=[256, 512, 1024, 2048],
         out_channels=256,
         start_level=1,
-        add_extra_convs=True,
+        add_extra_convs='on_output',  # use P5
         num_outs=5,
-        relu_before_extra_convs=True,
-        init_cfg=dict(type='Caffe2Xavier', layer='Conv2d')),
+        relu_before_extra_convs=True),
     bbox_head=dict(
-        type='AutoAssignPlusHead',
-        num_classes=10,
+        type='VFNetHead',
+        num_classes=1,
         in_channels=256,
-        stacked_convs=4,
+        stacked_convs=3,
         feat_channels=256,
         strides=[8, 16, 32, 64, 128],
+        center_sampling=False,
+        dcn_on_last_conv=False,
+        use_atss=True,
+        use_vfl=True,
         loss_cls=dict(
-            type='FocalLoss',
+            type='VarifocalLoss',
             use_sigmoid=True,
+            alpha=0.75,
             gamma=2.0,
-            alpha=0.25,
+            iou_weighted=True,
             loss_weight=1.0),
-        loss_bbox=dict(type='GIoULoss', loss_weight=5.0)),
-        
-    train_cfg=None,
+        loss_bbox=dict(type='GIoULoss', loss_weight=1.5),
+        loss_bbox_refine=dict(type='GIoULoss', loss_weight=2.0)),
+    # training and testing settings
+    train_cfg=dict(
+        assigner=dict(type='ATSSAssigner', topk=9),
+        allowed_border=-1,
+        pos_weight=-1,
+        debug=False),
     test_cfg=dict(
         nms_pre=1000,
         min_bbox_size=0,
         score_thr=0.05,
         nms=dict(type='nms', iou_threshold=0.6),
         max_per_img=100))
-img_norm_cfg = dict(
-    mean=[86.218, 91.479, 81.957], std=[1.0, 1.0, 1.0], to_rgb=False)
+
+# dataset settings
+dataset_type = "SsddDataset"
+data_root = "data/SSDD_coco/"
+img_norm_cfg = dict(mean=[35.757, 39.758, 39.752], std=[27.732, 27.734, 27.718], to_rgb=True)
 train_pipeline = [
     dict(type='LoadImageFromFile'),
     dict(type='LoadAnnotations', with_bbox=True),
@@ -59,7 +68,7 @@ train_pipeline = [
     dict(type='Normalize', **img_norm_cfg),
     dict(type='Pad', size_divisor=32),
     dict(type='DefaultFormatBundle'),
-    dict(type='Collect', keys=['img', 'gt_bboxes', 'gt_labels'])
+    dict(type='Collect', keys=['img', 'gt_bboxes', 'gt_labels']),
 ]
 test_pipeline = [
     dict(type='LoadImageFromFile'),
@@ -72,23 +81,26 @@ test_pipeline = [
             dict(type='RandomFlip'),
             dict(type='Normalize', **img_norm_cfg),
             dict(type='Pad', size_divisor=32),
-            dict(type='ImageToTensor', keys=['img']),
-            dict(type='Collect', keys=['img'])
+            dict(type='DefaultFormatBundle'),
+            dict(type='Collect', keys=['img']),
         ])
-] 
+]
 data = dict(
+    samples_per_gpu=4,
+    workers_per_gpu=4,
     train=dict(pipeline=train_pipeline),
     val=dict(pipeline=test_pipeline),
     test=dict(pipeline=test_pipeline))
+
 # optimizer
-optimizer = dict(lr=0.005, paramwise_cfg=dict(norm_decay_mult=0.))
+optimizer = dict(
+    lr=0.005, paramwise_cfg=dict(bias_lr_mult=2., bias_decay_mult=0.))
+optimizer_config = dict(grad_clip=None)
 # learning policy
 lr_config = dict(
     policy='step',
     warmup='linear',
-    warmup_iters=1000,
-    warmup_ratio=1.0 / 1000,
+    warmup_iters=500,
+    warmup_ratio=0.1,
     step=[60, 90])
-# total_epochs = 100
-runner = runner = dict(type='EpochBasedRunner', max_epochs=100)
-
+runner = dict(type='EpochBasedRunner', max_epochs=100)

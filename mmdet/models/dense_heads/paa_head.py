@@ -338,6 +338,7 @@ class PAAHead(ATSSHead):
                                   'to install sklearn first.')
             gmm = skm.GaussianMixture(
                 2,
+                reg_covar=1e-05,
                 weights_init=weights_init,
                 means_init=means_init,
                 precisions_init=precisions_init,

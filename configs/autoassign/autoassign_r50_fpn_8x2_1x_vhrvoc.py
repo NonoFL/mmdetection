@@ -43,7 +43,7 @@ model = dict(
         nms=dict(type='nms', iou_threshold=0.6),
         max_per_img=100))
 img_norm_cfg = dict(
-    mean=[102.9801, 115.9465, 122.7717], std=[1.0, 1.0, 1.0], to_rgb=False)
+    mean=[86.218, 91.479, 81.957], std=[1.0, 1.0, 1.0], to_rgb=False)
 train_pipeline = [
     dict(type='LoadImageFromFile'),
     dict(type='LoadAnnotations', with_bbox=True),
@@ -74,14 +74,16 @@ data = dict(
     val=dict(pipeline=test_pipeline),
     test=dict(pipeline=test_pipeline))
 
+
 # optimizer
-optimizer = dict(lr=0.1, paramwise_cfg=dict(norm_decay_mult=0.))
+optimizer = dict(lr=0.01, paramwise_cfg=dict(norm_decay_mult=0.))
 # learning policy
 lr_config = dict(
     policy='step',
     warmup='linear',
     warmup_iters=1000,
     warmup_ratio=1.0 / 1000,
-    step=[333, 458])
+    step=[60, 90])
+# total_epochs = 100
 runner = runner = dict(type='EpochBasedRunner', max_epochs=100)
 

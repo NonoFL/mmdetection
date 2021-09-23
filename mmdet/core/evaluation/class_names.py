@@ -41,14 +41,14 @@ def ssdd_classes():
 def vhr_classes():
     return [
         "airplane",
-        "ship",
-        "storage tank",
         "baseball diamond",
         "tennis court",
         "basketball court",
         "ground track field",
-        "harbor",
         "bridge",
+        "harbor",
+        "ship",
+        "storage tank",
         "vehicle",
     ]
 

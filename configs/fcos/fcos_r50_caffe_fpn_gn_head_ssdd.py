@@ -59,7 +59,7 @@ model = dict(
         nms=dict(type='nms', iou_threshold=0.5),
         max_per_img=100))
 img_norm_cfg = dict(
-    mean=[102.9801, 115.9465, 122.7717], std=[1.0, 1.0, 1.0], to_rgb=False)
+    mean=[35.757, 39.758, 39.752], std=[1.0, 1.0, 1.0], to_rgb=False)
 train_pipeline = [
     dict(type='LoadImageFromFile'),
     dict(type='LoadAnnotations', with_bbox=True),
@@ -86,7 +86,7 @@ test_pipeline = [
         ])
 ]
 data = dict(
-    samples_per_gpu=2,
+    samples_per_gpu=8,
     workers_per_gpu=2,
     train=dict(pipeline=train_pipeline),
     val=dict(pipeline=test_pipeline),
@@ -100,7 +100,7 @@ optimizer_config = dict(
 lr_config = dict(
     policy='step',
     warmup='constant',
-    warmup_iters=500,
+    warmup_iters=1000,
     warmup_ratio=1.0 / 3,
     step=[8, 11])
 runner = dict(type='EpochBasedRunner', max_epochs=12)

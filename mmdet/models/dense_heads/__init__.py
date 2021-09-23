@@ -36,6 +36,11 @@ from .yolox_head import YOLOXHead
 from .autoassignplus_head import AutoAssignPlusHead
 from .retina_head_p import RetinaHeadPlus
 from .lll import LLLHead
+from .abs_head import ABSHead
+from .bs_head import BSHead
+from .fcosv1_head import FCOSv1Head
+from .fcosv2_head import FCOSv2Head
+from .fcosv3_head import FCOSv3Head
 __all__ = [
     'AnchorFreeHead', 'AnchorHead', 'GuidedAnchorHead', 'FeatureAdaption',
     'RPNHead', 'GARPNHead', 'RetinaHead', 'RetinaSepBNHead', 'GARetinaHead',
@@ -46,5 +51,6 @@ __all__ = [
     'SABLRetinaHead', 'CentripetalHead', 'VFNetHead', 'StageCascadeRPNHead',
     'CascadeRPNHead', 'EmbeddingRPNHead', 'LDHead', 'CascadeRPNHead',
     'AutoAssignHead', 'DETRHead', 'YOLOFHead', 'DeformableDETRHead',
-    'CenterNetHead', 'YOLOXHead', 'AutoAssignPlusHead', 'RetinaHeadPlus' ,'LLLHead'
+    'CenterNetHead', 'YOLOXHead', 'AutoAssignPlusHead', 'RetinaHeadPlus' ,'LLLHead',
+    'ABSHead', 'BSHead', 'FCOSv1Head', 'FCOSv2Head', 'FCOSv3Head'
 ]

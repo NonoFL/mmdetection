@@ -1,9 +1,10 @@
+
 _base_ = [
-    '../_base_/datasets/ssdd_detection.py',
+    '../_base_/datasets/vhr_detection.py',
     '../_base_/schedules/schedule_1x.py', '../_base_/default_runtime.py'
 ]
 model = dict(
-    type='PAA',
+    type='ABS',
     backbone=dict(
         type='ResNet',
         depth=50,
@@ -22,11 +23,8 @@ model = dict(
         add_extra_convs='on_output',
         num_outs=5),
     bbox_head=dict(
-        type='PAAHead',
-        reg_decoded_bbox=True,
-        score_voting=True,
-        topk=9,
-        num_classes=1,
+        type='ABSHead',
+        num_classes=10,
         in_channels=256,
         stacked_convs=4,
         feat_channels=256,
@@ -46,17 +44,12 @@ model = dict(
             gamma=2.0,
             alpha=0.25,
             loss_weight=1.0),
-        loss_bbox=dict(type='GIoULoss', loss_weight=1.3),
+        loss_bbox=dict(type='GIoULoss', loss_weight=2.0),
         loss_centerness=dict(
-            type='CrossEntropyLoss', use_sigmoid=True, loss_weight=0.5)),
+            type='CrossEntropyLoss', use_sigmoid=True, loss_weight=1.0)),
     # training and testing settings
     train_cfg=dict(
-        assigner=dict(
-            type='MaxIoUAssigner',
-            pos_iou_thr=0.1,
-            neg_iou_thr=0.1,
-            min_pos_iou=0,
-            ignore_iof_thr=-1),
+        assigner=dict(type='ABSAssigner', topk=9),
         allowed_border=-1,
         pos_weight=-1,
         debug=False),
@@ -67,4 +60,11 @@ model = dict(
         nms=dict(type='nms', iou_threshold=0.6),
         max_per_img=100))
 # optimizer
-optimizer = dict(type='SGD', lr=0.025, momentum=0.9, weight_decay=0.0001)
+optimizer = dict(type='SGD', lr=0.01, momentum=0.9, weight_decay=0.0001)
+lr_config = dict(
+    policy='step',
+    warmup='linear',
+    warmup_iters=1000,
+    warmup_ratio=1.0 / 1000,
+    step=[320, 450])
+runner = dict(type='EpochBasedRunner', max_epochs=500)
