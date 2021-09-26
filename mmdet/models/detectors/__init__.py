@@ -12,6 +12,7 @@ from .fcos import FCOS
 from .fovea import FOVEA
 from .fsaf import FSAF
 from .gfl import GFL
+from .gflv2 import GFLv2
 from .grid_rcnn import GridRCNN
 from .htc import HybridTaskCascade
 from .kd_one_stage import KnowledgeDistillationSingleStageDetector
@@ -48,7 +49,7 @@ __all__ = [
     'KnowledgeDistillationSingleStageDetector', 'FastRCNN', 'FasterRCNN',
     'MaskRCNN', 'CascadeRCNN', 'HybridTaskCascade', 'RetinaNet', 'FCOS',
     'GridRCNN', 'MaskScoringRCNN', 'RepPointsDetector', 'FOVEA', 'FSAF',
-    'NASFCOS', 'PointRend', 'GFL', 'CornerNet', 'PAA', 'YOLOV3', 'YOLACT',
+    'NASFCOS', 'PointRend', 'GFL', 'GFLv2', 'CornerNet', 'PAA', 'YOLOV3', 'YOLACT',
     'VFNet', 'DETR', 'TridentFasterRCNN', 'SparseRCNN', 'SCNet',
     'DeformableDETR', 'AutoAssign', 'YOLOF', 'CenterNet', 'YOLOX',
     'TwoStagePanopticSegmentor', 'PanopticFPN', 'AutoAssignPlus', 'RetinaNetPlus', 

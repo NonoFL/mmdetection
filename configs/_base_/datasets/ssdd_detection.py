@@ -29,7 +29,7 @@ test_pipeline = [
     ),
 ]
 data = dict(
-    samples_per_gpu=2,      #batchsize
+    samples_per_gpu=4,      #batchsize
     workers_per_gpu=4,
     train=dict(
         type=dataset_type,
@@ -50,4 +50,4 @@ data = dict(
         pipeline=test_pipeline,
     ),
 )
-evaluation = dict(interval=2, metric="bbox")    #interval:更改val的间隔
+evaluation = dict(interval=1, metric="bbox")    #interval:更改val的间隔

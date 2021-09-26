@@ -12,9 +12,10 @@ from .sim_ota_assigner import SimOTAAssigner
 from .uniform_assigner import UniformAssigner
 from .abs_assigner import ABSAssigner
 from .bs_assigner import BSAssigner
+from .atss_assigner_img import ATSSAssigner_img
 __all__ = [
     'BaseAssigner', 'MaxIoUAssigner', 'ApproxMaxIoUAssigner', 'AssignResult',
     'PointAssigner', 'ATSSAssigner', 'CenterRegionAssigner', 'GridAssigner',
     'HungarianAssigner', 'RegionAssigner', 'UniformAssigner', 'SimOTAAssigner',
-    'ABSAssigner', 'BSAssigner'
+    'ABSAssigner', 'BSAssigner', 'ATSSAssigner_img'
 ]
