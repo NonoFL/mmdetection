@@ -123,7 +123,10 @@ class ATSSAssignerv4(BaseAssigner):
         _, ensure_pos_topk_idx = distances.topk(self.topk, dim=0, largest=False)
         ensure_pos_overlaps = overlaps[ensure_pos_topk_idx, torch.arange(num_gt)]
         ensure_pos_median = ensure_pos_overlaps.median(0)[0]
-        is_pos = (ensure_pos_overlaps > 0)+0
+        ensure_pos_std = ensure_pos_overlaps.std(0)
+        pos_tensor = torch.zeros_like(overlaps)
+        pos_tensor[ensure_pos_topk_idx] = 1
+        # is_pos = (ensure_pos_overlaps > 0)+0
 
         for level, bboxes_per_level in enumerate(num_level_bboxes):
             # on each pyramid level, for each gt,
@@ -136,15 +139,20 @@ class ATSSAssignerv4(BaseAssigner):
             candidate_idxs.append(topk_idxs_per_level + start_idx)
             start_idx = end_idx
         candidate_idxs = torch.cat(candidate_idxs, dim=0)
+        candidate_idxs = torch.cat((ensure_pos_topk_idx, candidate_idxs), dim=0)
+
 
         # get corresponding iou for the these candidates, and compute the
         # mean and std, set mean + std as the iou threshold
+
+
+        
+
         candidate_overlaps = overlaps[candidate_idxs, torch.arange(num_gt)]
-        overlaps_thr_per_gt = ensure_pos_median + candidate_overlaps.std(0)
+        overlaps_thr_per_gt = ensure_pos_median + ensure_pos_std
+        is_pos = candidate_overlaps >= overlaps_thr_per_gt
+        is_pos[:self.topk,:] = True# 把ensure—pos的is_pos = True
 
-        candidate_overlaps[is_pos] = 0      # 为了不进行下一步，只对外围（candidate筛选，中间确定是正样本）
-
-        is_pos = is_pos + (candidate_overlaps >= overlaps_thr_per_gt[None, :])
 
         # limit the positive sample's center in gt
         for gt_idx in range(num_gt):
@@ -163,6 +171,7 @@ class ATSSAssignerv4(BaseAssigner):
         b_ = gt_bboxes[:, 3] - ep_bboxes_cy[candidate_idxs].view(-1, num_gt)
         is_in_gts = torch.stack([l_, t_, r_, b_], dim=1).min(dim=1)[0] > 0.01
         is_pos = is_pos & is_in_gts
+
 
         # if an anchor box is assigned to multiple gts,
         # the one with the highest IoU will be selected.

@@ -5,7 +5,7 @@ _base_ = [
     '../_base_/schedules/schedule_1x.py', '../_base_/default_runtime.py'
 ]
 model = dict(
-    type='AutoAssignPlus',
+    type='AutoAssign',
     backbone=dict(
         type='ResNet',
         depth=50,
