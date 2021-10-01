@@ -44,6 +44,8 @@ from .bs import BS
 from .fcosv1 import FCOSv1
 from .fcosv2 import FCOSv2
 from .fcosv3 import FCOSv3
+
+from .new import New
 __all__ = [
     'ATSS', 'BaseDetector', 'SingleStageDetector', 'TwoStageDetector', 'RPN',
     'KnowledgeDistillationSingleStageDetector', 'FastRCNN', 'FasterRCNN',
@@ -53,5 +55,5 @@ __all__ = [
     'VFNet', 'DETR', 'TridentFasterRCNN', 'SparseRCNN', 'SCNet',
     'DeformableDETR', 'AutoAssign', 'YOLOF', 'CenterNet', 'YOLOX',
     'TwoStagePanopticSegmentor', 'PanopticFPN', 'AutoAssignPlus', 'RetinaNetPlus', 
-    'LLL','ABS', 'BS', 'FCOSv1', 'FCOSv2', 'FCOSv3'
+    'LLL','ABS', 'BS', 'FCOSv1', 'FCOSv2', 'FCOSv3', 'New'
 ]

@@ -1,5 +1,5 @@
 _base_ = [
-    '../_base_/datasets/vhrvoc_detection.py',
+    '../_base_/datasets/ssdd_detection.py',
     '../_base_/schedules/schedule_1x.py', '../_base_/default_runtime.py'
 ]
 model = dict(
@@ -23,7 +23,7 @@ model = dict(
         num_outs=5),
     bbox_head=dict(
         type='ATSSHead',
-        num_classes=10,
+        num_classes=1,
         in_channels=256,
         stacked_convs=4,
         feat_channels=256,
@@ -48,7 +48,7 @@ model = dict(
             type='CrossEntropyLoss', use_sigmoid=True, loss_weight=1.0)),
     # training and testing settings
     train_cfg=dict(
-        assigner=dict(type='ATSSAssigner', topk=9),
+        assigner=dict(type='ATSSAssignerv6', topk=9),
         allowed_border=-1,
         pos_weight=-1,
         debug=False),
@@ -58,7 +58,7 @@ model = dict(
         score_thr=0.05,
         nms=dict(type='nms', iou_threshold=0.6),
         max_per_img=100))
-        
+# optimizer
 optimizer = dict(type='SGD', lr=0.005, momentum=0.9, weight_decay=0.0001)
 lr_config = dict(
     policy='step',

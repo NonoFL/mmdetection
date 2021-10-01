@@ -1,5 +1,5 @@
 '''
-首先确定true_pos，数量为topk，离gtbbox中心最近， img层次的，算出其thr = median+std
+首先确定true_pos，数量为topk，离gtbbox中心最近， img层次的，算出其thr = mean+std, 这些点中，<|mean-std|的为neg
 选gtbboxe中心最近的2*topk，；除了true_pos外,>thr的为pos
 '''
 
@@ -12,7 +12,7 @@ from .base_assigner import BaseAssigner
 
 
 @BBOX_ASSIGNERS.register_module()
-class ATSSAssignerv4(BaseAssigner):
+class ATSSAssignerv7(BaseAssigner):
     """Assign a corresponding gt bbox or background to each bbox.
 
     Each proposals will be assigned with `0` or a positive integer
@@ -122,10 +122,10 @@ class ATSSAssignerv4(BaseAssigner):
 
         _, ensure_pos_topk_idx = distances.topk(self.topk, dim=0, largest=False)
         ensure_pos_overlaps = overlaps[ensure_pos_topk_idx, torch.arange(num_gt)]
-        ensure_pos_median = ensure_pos_overlaps.median(0)[0]
+        ensure_pos_mean = ensure_pos_overlaps.mean(0)[0]
         ensure_pos_std = ensure_pos_overlaps.std(0)
-
-        # is_pos = (ensure_pos_overlaps > 0)+0
+        
+        posa_in_pos = ensure_pos_overlaps >= torch.abs(ensure_pos_mean-ensure_pos_std)
 
         for level, bboxes_per_level in enumerate(num_level_bboxes):
             # on each pyramid level, for each gt,
@@ -144,14 +144,13 @@ class ATSSAssignerv4(BaseAssigner):
         # get corresponding iou for the these candidates, and compute the
         # mean and std, set mean + std as the iou threshold
 
-
-        
-
         candidate_overlaps = overlaps[candidate_idxs, torch.arange(num_gt)]
-        overlaps_thr_per_gt = ensure_pos_median + ensure_pos_std
+        overlaps_thr_per_gt = ensure_pos_mean + ensure_pos_std
         is_pos = candidate_overlaps >= overlaps_thr_per_gt
         is_pos[:self.topk,:] = True# 把ensure—pos的is_pos = True
 
+        # 把ensure_pos中 iou<|mean-std|的设为neg
+        is_pos[:self.topk,:] = is_pos[:self.topk,:] & posa_in_pos
 
         # limit the positive sample's center in gt
         for gt_idx in range(num_gt):

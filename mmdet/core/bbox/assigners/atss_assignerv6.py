@@ -1,5 +1,5 @@
 '''
-首先确定true_pos，数量为topk，离gtbbox中心最近， img层次的，算出其thr = median+std
+首先确定true_pos，数量为topk，离gtbbox中心最近， img层次的，算出其thr = mean+std
 选gtbboxe中心最近的2*topk，；除了true_pos外,>thr的为pos
 '''
 
@@ -12,7 +12,7 @@ from .base_assigner import BaseAssigner
 
 
 @BBOX_ASSIGNERS.register_module()
-class ATSSAssignerv4(BaseAssigner):
+class ATSSAssignerv6(BaseAssigner):
     """Assign a corresponding gt bbox or background to each bbox.
 
     Each proposals will be assigned with `0` or a positive integer
@@ -122,9 +122,10 @@ class ATSSAssignerv4(BaseAssigner):
 
         _, ensure_pos_topk_idx = distances.topk(self.topk, dim=0, largest=False)
         ensure_pos_overlaps = overlaps[ensure_pos_topk_idx, torch.arange(num_gt)]
-        ensure_pos_median = ensure_pos_overlaps.median(0)[0]
+        ensure_pos_median = ensure_pos_overlaps.mean(0)[0]
         ensure_pos_std = ensure_pos_overlaps.std(0)
-
+        pos_tensor = torch.zeros_like(overlaps)
+        pos_tensor[ensure_pos_topk_idx] = 1
         # is_pos = (ensure_pos_overlaps > 0)+0
 
         for level, bboxes_per_level in enumerate(num_level_bboxes):

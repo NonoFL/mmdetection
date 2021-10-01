@@ -1,6 +1,6 @@
 '''
-首先确定true_pos，数量为topk，离gtbbox中心最近， img层次的，算出其thr = median+std
-选gtbboxe中心最近的2*topk，；除了true_pos外,>thr的为pos
+首先确定true_pos，数量为topk，离gtbbox中心最近，算出其median
+选gtbboxe中心最近的topk，；除了true_pos外，算出std，>true_pos的median+std的，为pos
 '''
 
 import torch
@@ -12,7 +12,7 @@ from .base_assigner import BaseAssigner
 
 
 @BBOX_ASSIGNERS.register_module()
-class ATSSAssignerv4(BaseAssigner):
+class ATSSAssignerv5(BaseAssigner):
     """Assign a corresponding gt bbox or background to each bbox.
 
     Each proposals will be assigned with `0` or a positive integer
@@ -124,7 +124,8 @@ class ATSSAssignerv4(BaseAssigner):
         ensure_pos_overlaps = overlaps[ensure_pos_topk_idx, torch.arange(num_gt)]
         ensure_pos_median = ensure_pos_overlaps.median(0)[0]
         ensure_pos_std = ensure_pos_overlaps.std(0)
-
+        pos_tensor = torch.zeros_like(overlaps)
+        pos_tensor[ensure_pos_topk_idx] = 1
         # is_pos = (ensure_pos_overlaps > 0)+0
 
         for level, bboxes_per_level in enumerate(num_level_bboxes):
@@ -132,7 +133,7 @@ class ATSSAssignerv4(BaseAssigner):
             # select k bbox whose center are closest to the gt center
             end_idx = start_idx + bboxes_per_level
             distances_per_level = distances[start_idx:end_idx, :]
-            selectable_k = min(self.topk*2, bboxes_per_level)
+            selectable_k = min(self.topk, bboxes_per_level)
             _, topk_idxs_per_level = distances_per_level.topk(
                 selectable_k, dim=0, largest=False)
             candidate_idxs.append(topk_idxs_per_level + start_idx)

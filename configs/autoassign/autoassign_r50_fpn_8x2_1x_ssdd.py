@@ -74,7 +74,7 @@ data = dict(
     val=dict(pipeline=test_pipeline),
     test=dict(pipeline=test_pipeline))
 # optimizer
-optimizer = dict(lr=0.01, paramwise_cfg=dict(norm_decay_mult=0.))
+optimizer = dict(lr=0.005, paramwise_cfg=dict(norm_decay_mult=0.))
 # learning policy
 lr_config = dict(
     policy='step',

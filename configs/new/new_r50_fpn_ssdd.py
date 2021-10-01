@@ -1,9 +1,9 @@
 _base_ = [
-    '../_base_/datasets/vhrvoc_detection.py',
+    '../_base_/datasets/ssdd_detection.py',
     '../_base_/schedules/schedule_1x.py', '../_base_/default_runtime.py'
 ]
 model = dict(
-    type='ATSS',
+    type='New',
     backbone=dict(
         type='ResNet',
         depth=50,
@@ -22,8 +22,8 @@ model = dict(
         add_extra_convs='on_output',
         num_outs=5),
     bbox_head=dict(
-        type='ATSSHead',
-        num_classes=10,
+        type='NewHead',
+        num_classes=1,
         in_channels=256,
         stacked_convs=4,
         feat_channels=256,
@@ -48,7 +48,7 @@ model = dict(
             type='CrossEntropyLoss', use_sigmoid=True, loss_weight=1.0)),
     # training and testing settings
     train_cfg=dict(
-        assigner=dict(type='ATSSAssigner', topk=9),
+        assigner=dict(type='NewAssigner', topk=9),
         allowed_border=-1,
         pos_weight=-1,
         debug=False),
@@ -58,12 +58,12 @@ model = dict(
         score_thr=0.05,
         nms=dict(type='nms', iou_threshold=0.6),
         max_per_img=100))
-        
-optimizer = dict(type='SGD', lr=0.005, momentum=0.9, weight_decay=0.0001)
+# optimizer
+optimizer = dict(type='SGD', lr=0.01, momentum=0.9, weight_decay=0.0001)
 lr_config = dict(
     policy='step',
     warmup='linear',
     warmup_iters=1000,
     warmup_ratio=1.0 / 1000,
-    step=[60, 95])
-runner = dict(type='EpochBasedRunner', max_epochs=100)
+    step=[320, 450])
+runner = dict(type='EpochBasedRunner', max_epochs=500)

@@ -42,6 +42,8 @@ from .bs_head import BSHead
 from .fcosv1_head import FCOSv1Head
 from .fcosv2_head import FCOSv2Head
 from .fcosv3_head import FCOSv3Head
+
+from .new_head import NewHead
 __all__ = [
     'AnchorFreeHead', 'AnchorHead', 'GuidedAnchorHead', 'FeatureAdaption',
     'RPNHead', 'GARPNHead', 'RetinaHead', 'RetinaSepBNHead', 'GARetinaHead',
@@ -53,5 +55,5 @@ __all__ = [
     'CascadeRPNHead', 'EmbeddingRPNHead', 'LDHead', 'CascadeRPNHead',
     'AutoAssignHead', 'DETRHead', 'YOLOFHead', 'DeformableDETRHead',
     'CenterNetHead', 'YOLOXHead', 'AutoAssignPlusHead', 'RetinaHeadPlus' ,'LLLHead',
-    'ABSHead', 'BSHead', 'FCOSv1Head', 'FCOSv2Head', 'FCOSv3Head'
+    'ABSHead', 'BSHead', 'FCOSv1Head', 'FCOSv2Head', 'FCOSv3Head', 'NewHead'
 ]
