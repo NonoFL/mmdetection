@@ -42,7 +42,7 @@ from .bs_head import BSHead
 from .fcosv1_head import FCOSv1Head
 from .fcosv2_head import FCOSv2Head
 from .fcosv3_head import FCOSv3Head
-
+from .atss_head_v1 import ATSSHeadv1
 from .new_head import NewHead
 __all__ = [
     'AnchorFreeHead', 'AnchorHead', 'GuidedAnchorHead', 'FeatureAdaption',
@@ -53,7 +53,7 @@ __all__ = [
     'YOLACTSegmHead', 'YOLACTProtonet', 'YOLOV3Head', 'PAAHead',
     'SABLRetinaHead', 'CentripetalHead', 'VFNetHead', 'StageCascadeRPNHead',
     'CascadeRPNHead', 'EmbeddingRPNHead', 'LDHead', 'CascadeRPNHead',
-    'AutoAssignHead', 'DETRHead', 'YOLOFHead', 'DeformableDETRHead',
+    'AutoAssignHead', 'DETRHead', 'YOLOFHead', 'DeformableDETRHead','ATSSHeadv1',
     'CenterNetHead', 'YOLOXHead', 'AutoAssignPlusHead', 'RetinaHeadPlus' ,'LLLHead',
     'ABSHead', 'BSHead', 'FCOSv1Head', 'FCOSv2Head', 'FCOSv3Head', 'NewHead'
 ]

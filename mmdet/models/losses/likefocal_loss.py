@@ -1,11 +1,12 @@
 import mmcv
 import torch
+import torch
 import torch.nn as nn
 import torch.nn.functional as F
+from mmcv.ops import sigmoid_focal_loss as _sigmoid_focal_loss
 
 from ..builder import LOSSES
 from .utils import weight_reduce_loss
-
 
 @mmcv.jit(derivate=True, coderize=True)
 def likefocal_loss(pred,
@@ -16,20 +17,28 @@ def likefocal_loss(pred,
                    iou_weighted=True,
                    reduction='mean',
                    avg_factor=None):
-    assert pred.size() == target.size()
-    # pred_sigmoid = pred.sigmoid()
+    loss = _sigmoid_focal_loss(pred.contiguous(), target, gamma, alpha, None,
+                               'none')
     target = target.type_as(pred)
-    label = torch.zeros_like(target)
-    label[target>0] = 1
-    label.requires_grad=True
 
-    focal_weight = alpha * (1- target).pow(gamma) * (label>0.0).float() + \
-        (1-alpha)* (label<1).float()
+    focal_weight = target
     
-    loss = F.binary_cross_entropy_with_logits(pred, label, reduction='none') * focal_weight
+    if weight is not None:
+        if weight.shape != loss.shape:
+            if weight.size(0) == loss.size(0):
+                # For most cases, weight is of shape (num_priors, ),
+                #  which means it does not have the second axis num_class
+                weight = weight.view(-1, 1)
+            else:
+                # Sometimes, weight per anchor per class is also needed. e.g.
+                #  in FSAF. But it may be flattened of shape
+                #  (num_priors x num_class, ), while loss is still of shape
+                #  (num_priors, num_class).
+                assert weight.numel() == loss.numel()
+                weight = weight.view(loss.size(0), -1)
+        assert weight.ndim == loss.ndim
     loss = weight_reduce_loss(loss, weight, reduction, avg_factor)
     return loss
-
 @LOSSES.register_module()
 class Likefocalloss(nn.Module):
     def __init__(self,
