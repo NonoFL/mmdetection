@@ -1,5 +1,8 @@
-import torch
+'''
+考虑联合分类和定位：将ATSSassigner中的以iou为正负分配的标准改为iou*cls，其余基本同ATSS——assigner6
+'''
 
+import torch
 from ..builder import BBOX_ASSIGNERS
 from ..iou_calculators import build_iou_calculator
 from .assign_result import AssignResult
@@ -68,17 +71,11 @@ class NewAssigner(BaseAssigner):
             assigned_gt_inds[ignore_idxs] = -1
 
         _, ensure_pos_topk_idx = distances.topk(self.topk, dim=0, largest=False)
-
-
         # cls*iou
         cls_scores = cls_scores.sigmoid()
-        decoded_bbox_pred = self.bbox_coder.decode(bboxes, bbox_preds)
-        iou_pred_gt = self.iou_calculator(decoded_bbox_pred, gt_bboxes)
-        
-        #扩展cls_scores:
-        # TODO :确定这里是原本的cls score的clone还是深copy
         cls_scores = cls_scores[:, gt_labels]
-        iou_cls = iou_pred_gt * cls_scores
+        Piou = torch.exp(overlaps - 1)
+        iou_cls = torch.exp(cls_scores*Piou)
         iou_cls_pos = iou_cls[ensure_pos_topk_idx, range(num_gt)]
         iou_cls_thr = iou_cls_pos.mean(0) + iou_cls_pos.std(0)
 
@@ -113,11 +110,11 @@ class NewAssigner(BaseAssigner):
         r_ = gt_bboxes[:, 2] - ep_bboxes_cx[candidate_idxs].view(-1, num_gt)
         b_ = gt_bboxes[:, 3] - ep_bboxes_cy[candidate_idxs].view(-1, num_gt)
         is_in_gts = torch.stack([l_, t_, r_, b_], dim=1).min(dim=1)[0] > 0.01
-        later_pos = is_pos & is_in_gts
+        is_pos = is_pos & is_in_gts
 
 
         iou_cls_inf = torch.full_like(iou_cls, -INF).t().contiguous().view(-1)
-        index = candidate_idxs.view(-1)[later_pos.view(-1)]
+        index = candidate_idxs.view(-1)[is_pos.view(-1)]
         iou_cls_inf[index] = iou_cls.t().contiguous().view(-1)[index]
         iou_cls_inf = iou_cls_inf.view(num_gt, -1).t()
         max_iou_cls, argmax_iou_cls = iou_cls_inf.max(dim=1)

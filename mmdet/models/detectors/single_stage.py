@@ -43,6 +43,10 @@ class SingleStageDetector(BaseDetector):
         if self.with_neck:
             x = self.neck(x)
         return x
+        # x_backbone = self.backbone(img)
+        # if self.with_neck:
+        #     x_fpn = self.neck(x_backbone)
+        # return x_backbone, x_fpn
 
     def forward_dummy(self, img):
         """Used for computing network flops.
@@ -105,6 +109,15 @@ class SingleStageDetector(BaseDetector):
             for det_bboxes, det_labels in results_list
         ]
         return bbox_results
+        #NOTE featuremap
+        # feat_backbone, feat_fpn = self.extract_feat(img)
+        # results_list = self.bbox_head.simple_test(
+        #     feat_fpn, img_metas, rescale=rescale)
+        # bbox_results = [
+        #     bbox2result(det_bboxes, det_labels, self.bbox_head.num_classes)
+        #     for det_bboxes, det_labels in results_list
+        # ]
+        # return bbox_results,feat_backbone, feat_fpn
 
     def aug_test(self, imgs, img_metas, rescale=False):
         """Test function with test time augmentation.

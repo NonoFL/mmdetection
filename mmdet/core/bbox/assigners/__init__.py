@@ -19,11 +19,15 @@ from .atss_assignerv5 import ATSSAssignerv5
 from .atss_assignerv6 import ATSSAssignerv6
 from .atss_assignerv7 import ATSSAssignerv7
 from .atss_assignerv8 import ATSSAssignerv8
+from .atss_assignerv9 import ATSSAssignerv9
+from .atss_assignerv10 import ATSSAssignerv10
+from .atss_assignerv11 import ATSSAssignerv11
 from .new_assigner import NewAssigner
 __all__ = [
     'BaseAssigner', 'MaxIoUAssigner', 'ApproxMaxIoUAssigner', 'AssignResult',
     'PointAssigner', 'ATSSAssigner', 'CenterRegionAssigner', 'GridAssigner',
     'HungarianAssigner', 'RegionAssigner', 'UniformAssigner', 'SimOTAAssigner',
     'ABSAssigner', 'BSAssigner', 'ATSSAssigner_img', 'ATSSAssignerv3','ATSSAssignerv4', 'ATSSAssignerv5',
-    'NewAssigner', 'ATSSAssignerv6','ATSSAssignerv7', 'ATSSAssignerv8'
+    'NewAssigner', 'ATSSAssignerv6','ATSSAssignerv7', 'ATSSAssignerv8', 'ATSSAssignerv9', 'ATSSAssignerv10',
+    'ATSSAssignerv11'
 ]
