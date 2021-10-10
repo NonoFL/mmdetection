@@ -4,7 +4,8 @@ from argparse import ArgumentParser
 from mmdet.apis import (async_inference_detector, inference_detector,
                         init_detector, show_result_pyplot)
 
-
+# python demo/image_demo.py data/VHR_voc/JPEGImages/006.jpg work_dirs/atss/ATSS/atss_r50_fpn_1x_vhrvoc/atss_r50_fpn_1x_vhrvoc.py work_dirs/atss/ATSS/atss_r50_fpn_1x_vhrvoc/epoch_12.pth --device cpu
+# python demo/image_demo.py data/VHR_voc/JPEGImages/006.jpg work_dirs/atss/ATSS_myfpn/atss_r50_myfpn-1_1x_vhrvoc_v6（1）/atss_r50_myfpn-1_1x_vhrvoc_v6.py work_dirs/atss/ATSS_myfpn/atss_r50_myfpn-1_1x_vhrvoc_v6（1）/epoch_11.pth --device cpu
 def parse_args():
     parser = ArgumentParser()
     parser.add_argument('img', help='Image file')
@@ -26,7 +27,7 @@ def main(args):
     # build the model from a config file and a checkpoint file
     model = init_detector(args.config, args.checkpoint, device=args.device)
     # test a single image
-    result = inference_detector(model, args.img)
+    result, x, y = inference_detector(model, args.img)
     # show the results
     show_result_pyplot(model, args.img, result, score_thr=args.score_thr)
 

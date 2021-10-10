@@ -22,6 +22,7 @@ from .atss_assignerv8 import ATSSAssignerv8
 from .atss_assignerv9 import ATSSAssignerv9
 from .atss_assignerv10 import ATSSAssignerv10
 from .atss_assignerv11 import ATSSAssignerv11
+from .atss_assignerv12 import ATSSAssignerv12
 from .new_assigner import NewAssigner
 __all__ = [
     'BaseAssigner', 'MaxIoUAssigner', 'ApproxMaxIoUAssigner', 'AssignResult',
@@ -29,5 +30,5 @@ __all__ = [
     'HungarianAssigner', 'RegionAssigner', 'UniformAssigner', 'SimOTAAssigner',
     'ABSAssigner', 'BSAssigner', 'ATSSAssigner_img', 'ATSSAssignerv3','ATSSAssignerv4', 'ATSSAssignerv5',
     'NewAssigner', 'ATSSAssignerv6','ATSSAssignerv7', 'ATSSAssignerv8', 'ATSSAssignerv9', 'ATSSAssignerv10',
-    'ATSSAssignerv11'
+    'ATSSAssignerv11', 'ATSSAssignerv12'
 ]
