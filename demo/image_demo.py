@@ -14,7 +14,7 @@ def parse_args():
     parser.add_argument(
         '--device', default='cuda:0', help='Device used for inference')
     parser.add_argument(
-        '--score-thr', type=float, default=0.3, help='bbox score threshold')
+        '--score-thr', type=float, default=0.5, help='bbox score threshold')
     parser.add_argument(
         '--async-test',
         action='store_true',
@@ -27,7 +27,7 @@ def main(args):
     # build the model from a config file and a checkpoint file
     model = init_detector(args.config, args.checkpoint, device=args.device)
     # test a single image
-    result, x, y = inference_detector(model, args.img)
+    result= inference_detector(model, args.img)
     # show the results
     show_result_pyplot(model, args.img, result, score_thr=args.score_thr)
 
@@ -40,7 +40,7 @@ async def async_main(args):
     result = await asyncio.gather(tasks)
     # show the results
     show_result_pyplot(model, args.img, result[0], score_thr=args.score_thr)
-
+''''''''
 
 if __name__ == '__main__':
     args = parse_args()

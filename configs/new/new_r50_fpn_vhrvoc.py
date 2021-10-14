@@ -48,7 +48,7 @@ model = dict(
             type='CrossEntropyLoss', use_sigmoid=True, loss_weight=1.0)),
     # training and testing settings
     train_cfg=dict(
-        assigner=dict(type='NewAssigner', topk=9),
+        assigner=dict(type='ATSSAssignerv6', topk=9),
         allowed_border=-1,
         pos_weight=-1,
         debug=False),
