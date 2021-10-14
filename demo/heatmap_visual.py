@@ -8,15 +8,22 @@ import os
 
 def main():
 
-    config = 'work_dirs/atss/ATSS_v6/atss_r50_fpn_1x_ssdd_v6/atss_r50_fpn_1x_ssdd_v6.py'
-    checkpoint = 'work_dirs/atss/ATSS_v6/atss_r50_fpn_1x_ssdd_v6/epoch_64.pth'
+    # config = 'work_dirs/atss/ATSS_v6/atss_r50_fpn_1x_ssdd_v6/atss_r50_fpn_1x_ssdd_v6.py'
+    # checkpoint = 'work_dirs/atss/ATSS_v6/atss_r50_fpn_1x_ssdd_v6/epoch_64.pth'
     # config = 'work_dirs/atss/ATSS_myfpn/atss_r50_myfpn_1x_ssdd_v6/atss_r50_myfpn_1x_ssdd_v6.py'
     # checkpoint = 'work_dirs/atss/ATSS_myfpn/atss_r50_myfpn_1x_ssdd_v6/epoch_62.pth'
+    # checkpoint = 'work_dirs/atss/ATSS_v6/atss_r50_fpn_1x_vhrvoc_v6/epoch_18.pth' 
+    # config = 'work_dirs/atss/ATSS_v6/atss_r50_fpn_1x_vhrvoc_v6/atss_r50_fpn_1x_vhrvoc_v6.py'
+
+    checkpoint = 'work_dirs/atss/ATSS_myfpn/atss_r50_myfpn-1_1x_vhrvoc_v6（1）/epoch_11.pth' 
+    config = 'work_dirs/atss/ATSS_myfpn/atss_r50_myfpn-1_1x_vhrvoc_v6（1）/atss_r50_myfpn-1_1x_vhrvoc_v6.py'
+    
     device = 'cuda:0'
     # build the model from a config file and a checkpoint file
     model = init_detector(config, checkpoint, device=device)
     # test a single image
-    img = 'demo/ssdd/000697.jpg'
+    # img = 'demo/ssdd/000697.jpg'
+    img = 'data/VHR_voc/JPEGImages/529.jpg'
     image = cv2.imread(img)
     height, width, channels = image.shape
     result, x_backone, x_fpn = inference_detector(model, img)

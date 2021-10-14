@@ -6,8 +6,8 @@ from mmdet.apis import (async_inference_detector, inference_detector,
 
 '''
 
-python demo/image_demo.py demo/vhr/024.jpg work_dirs/atss/ATSS_v6/atss_r50_fpn_1x_vhrvoc_v6/atss_r50_fpn_1x_vhrvoc_v6.py work_dirs/atss/ATSS_v6/atss_r50_fpn_1x_vhrvoc_v6/epoch_18.pth 
-python demo/image_demo.py demo/vhr/024.jpg work_dirs/atss/ATSS_myfpn/atss_r50_myfpn-1_1x_vhrvoc_v6（1）/atss_r50_myfpn-1_1x_vhrvoc_v6.py work_dirs/atss/ATSS_myfpn/atss_r50_myfpn-1_1x_vhrvoc_v6（1）/epoch_11.pth 
+python demo/image_demo.py data/VHR_voc/JPEGImages/529.jpg work_dirs/atss/ATSS_v6/atss_r50_fpn_1x_vhrvoc_v6/atss_r50_fpn_1x_vhrvoc_v6.py work_dirs/atss/ATSS_v6/atss_r50_fpn_1x_vhrvoc_v6/epoch_18.pth 
+python demo/image_demo.py data/VHR_voc/JPEGImages/529.jpg work_dirs/atss/ATSS_myfpn/atss_r50_myfpn-1_1x_vhrvoc_v6（1）/atss_r50_myfpn-1_1x_vhrvoc_v6.py work_dirs/atss/ATSS_myfpn/atss_r50_myfpn-1_1x_vhrvoc_v6（1）/epoch_11.pth 
 
 
 '''
@@ -22,7 +22,7 @@ def parse_args():
     parser.add_argument(
         '--device', default='cuda:0', help='Device used for inference')
     parser.add_argument(
-        '--score-thr', type=float, default=0.3, help='bbox score threshold')
+        '--score-thr', type=float, default=0.1, help='bbox score threshold')
     parser.add_argument(
         '--async-test',
         action='store_true',
