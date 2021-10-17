@@ -14,6 +14,7 @@ from .ssd_neck import SSDNeck
 from .yolo_neck import YOLOV3Neck
 from .yolox_pafpn import YOLOXPAFPN
 from .mtfpn import MyFPN
+from .mtfpn_1 import MyFPN_1
 from .myfpnv2 import MyFPNv2
 from .myfpnv3 import MyFPNv3
 from .myfpnv4 import MyFPNv4
@@ -26,5 +27,5 @@ __all__ = [
     'FPN', 'BFP', 'ChannelMapper', 'HRFPN', 'NASFPN', 'FPN_CARAFE', 'PAFPN',
     'NASFCOS_FPN', 'RFP', 'YOLOV3Neck', 'FPG', 'DilatedEncoder',
     'CTResNetNeck', 'SSDNeck', 'YOLOXPAFPN', 'MyFPN', 'MyFPNv2', 'MyFPNv3', 'MyFPNv4',
-    'MyFPNv5', 'MyFPNv6', 'MyFPNv7', 'MyFPNv8', 'MyFPNv9'
+    'MyFPNv5', 'MyFPNv6', 'MyFPNv7', 'MyFPNv8', 'MyFPNv9', 'MyFPN_1'
 ]
