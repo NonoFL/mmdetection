@@ -23,9 +23,11 @@ from .myfpnv6 import MyFPNv6
 from .myfpnv7 import MyFPNv7
 from .myfpnv8 import MyFPNv8
 from .myfpnv9 import MyFPNv9
+from .myfpnv10 import MyFPNv10
+from .myfpnv11 import MyFPNv11
 __all__ = [
     'FPN', 'BFP', 'ChannelMapper', 'HRFPN', 'NASFPN', 'FPN_CARAFE', 'PAFPN',
     'NASFCOS_FPN', 'RFP', 'YOLOV3Neck', 'FPG', 'DilatedEncoder',
     'CTResNetNeck', 'SSDNeck', 'YOLOXPAFPN', 'MyFPN', 'MyFPNv2', 'MyFPNv3', 'MyFPNv4',
-    'MyFPNv5', 'MyFPNv6', 'MyFPNv7', 'MyFPNv8', 'MyFPNv9', 'MyFPN_1'
+    'MyFPNv5', 'MyFPNv6', 'MyFPNv7', 'MyFPNv8', 'MyFPNv9', 'MyFPN_1', 'MyFPNv10', 'MyFPNv11'
 ]
