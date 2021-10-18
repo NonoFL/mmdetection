@@ -8,7 +8,7 @@ from mmdet.apis import (async_inference_detector, inference_detector,
 
 python demo/image_demo.py data/VHR_voc/JPEGImages/529.jpg work_dirs/atss/ATSS_v6/atss_r50_fpn_1x_vhrvoc_v6/atss_r50_fpn_1x_vhrvoc_v6.py work_dirs/atss/ATSS_v6/atss_r50_fpn_1x_vhrvoc_v6/epoch_18.pth 
 python demo/image_demo.py data/VHR_voc/JPEGImages/529.jpg work_dirs/atss/ATSS_myfpn/atss_r50_myfpn-1_1x_vhrvoc_v6（1）/atss_r50_myfpn-1_1x_vhrvoc_v6.py work_dirs/atss/ATSS_myfpn/atss_r50_myfpn-1_1x_vhrvoc_v6（1）/epoch_11.pth 
-
+python demo/image_demo.py data/VHR_voc/JPEGImages/529.jpg work_dirs/atss/ATSS/atss_r50_fpn_1x_vhrvoc/atss_r50_fpn_1x_vhrvoc.py work_dirs/atss/ATSS/atss_r50_fpn_1x_vhrvoc/epoch_14.pth
 
 '''
 
@@ -16,13 +16,14 @@ python demo/image_demo.py data/VHR_voc/JPEGImages/529.jpg work_dirs/atss/ATSS_my
 
 def parse_args():
     parser = ArgumentParser()
+    parser.add_argument('out_file', )
     parser.add_argument('img', help='Image file')
     parser.add_argument('config', help='Config file')
     parser.add_argument('checkpoint', help='Checkpoint file')
     parser.add_argument(
         '--device', default='cuda:0', help='Device used for inference')
     parser.add_argument(
-        '--score-thr', type=float, default=0.1, help='bbox score threshold')
+        '--score-thr', type=float, default=0.3, help='bbox score threshold')
     parser.add_argument(
         '--async-test',
         action='store_true',
@@ -37,7 +38,7 @@ def main(args):
     # test a single image
     result, x, y = inference_detector(model, args.img)
     # show the results
-    show_result_pyplot(model, args.img, result, score_thr=args.score_thr)
+    show_result_pyplot(model, args.img, result, score_thr=args.score_thr, out_file=args.out_file)
 
 
 async def async_main(args):

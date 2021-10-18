@@ -269,7 +269,7 @@ class BaseDetector(BaseModule, metaclass=ABCMeta):
                     win_name='',
                     show=False,
                     wait_time=0,
-                    out_file=None):
+                    out_file="demo/VHR/ATSS_v6_res/"):
         """Draw `result` over `img`.
 
         Args:
@@ -298,6 +298,9 @@ class BaseDetector(BaseModule, metaclass=ABCMeta):
         Returns:
             img (Tensor): Only if not `show` or `out_file`
         """
+        img_path = img;
+        img_name = img[-7:-3]+'png'
+        print(img_name)
         img = mmcv.imread(img)
         img = img.copy()
         if isinstance(result, tuple):
@@ -326,6 +329,7 @@ class BaseDetector(BaseModule, metaclass=ABCMeta):
         # draw bounding boxes
         img = imshow_det_bboxes(
             img,
+            img_name,
             bboxes,
             labels,
             segms,

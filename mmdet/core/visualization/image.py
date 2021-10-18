@@ -26,6 +26,7 @@ def color_val_matplotlib(color):
 
 
 def imshow_det_bboxes(img,
+                      img_name,
                       bboxes,
                       labels,
                       segms=None,
@@ -184,6 +185,7 @@ def imshow_det_bboxes(img,
             plt.show(block=False)
             plt.pause(wait_time)
     if out_file is not None:
+        out_file = out_file+img_name
         mmcv.imwrite(img, out_file)
 
     plt.close()
