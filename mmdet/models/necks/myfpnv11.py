@@ -235,7 +235,7 @@ class BasicRFB(nn.Module):
 
         # self.ConvLinear = BasicConv(6*inter_planes, out_planes, kernel_size=1, stride=1, relu=False)
         # # self.shortcut = ConvModule(in_planes, out_planes, kernel_size=1, stride=stride, relu=False)
-        # self.selayer = SELayer(out_planes)
+        self.selayer = SELayer(out_planes)
 
         # # self.relu = nn.ReLU(inplace=False)
         self.branch0 = nn.Sequential(
