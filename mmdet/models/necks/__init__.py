@@ -16,8 +16,9 @@ from .yolox_pafpn import YOLOXPAFPN
 from .mtfpn import MyFPN
 from .myfpnv2 import MyFPNv2
 from .myfpnv3 import MyFPNv3
+from .myfpnv12_1 import MyFPNv12_1
 __all__ = [
     'FPN', 'BFP', 'ChannelMapper', 'HRFPN', 'NASFPN', 'FPN_CARAFE', 'PAFPN',
     'NASFCOS_FPN', 'RFP', 'YOLOV3Neck', 'FPG', 'DilatedEncoder',
-    'CTResNetNeck', 'SSDNeck', 'YOLOXPAFPN', 'MyFPN', 'MyFPNv2', 'MyFPNv3'
+    'CTResNetNeck', 'SSDNeck', 'YOLOXPAFPN', 'MyFPN', 'MyFPNv2', 'MyFPNv3', 'MyFPNv12_1'
 ]

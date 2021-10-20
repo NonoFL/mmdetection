@@ -61,11 +61,19 @@
 
 Folder_A="/home/apple/File/Study/C/GIT/mmdetection/data/VHR_voc/JPEGImages/"
 
+# for file in ${Folder_A}/*
+# do 
+#     temp_file=`basename $file`
+#     echo $Folder_A$temp_file
+
+#     python demo/image_demo.py "demo/VHR/0.5/ATSS_v6_myfpnv12_res/" $Folder_A$temp_file work_dirs/atss/ATSS_myfpnv12/atss_r50_myfpnv12_1_1x_vhrvoc_v6/atss_r50_myfpnv12_1_1x_vhrvoc_v6.py work_dirs/atss/ATSS_myfpnv12/atss_r50_myfpnv12_1_1x_vhrvoc_v6/epoch_9.pth
+# done
+
+
 for file in ${Folder_A}/*
 do 
     temp_file=`basename $file`
     echo $Folder_A$temp_file
 
-    python demo/image_demo.py "demo/VHR/0.5/ATSS_v6_myfpnv12_res/" $Folder_A$temp_file work_dirs/atss/ATSS_myfpnv12/atss_r50_myfpnv12_1_1x_vhrvoc_v6/atss_r50_myfpnv12_1_1x_vhrvoc_v6.py work_dirs/atss/ATSS_myfpnv12/atss_r50_myfpnv12_1_1x_vhrvoc_v6/epoch_9.pth
+    python demo/image_demo.py "demo/VHR/0.3/ATSS_v6_myfpn_res/" $Folder_A$temp_file work_dirs/atss/ATSS_myfpn/atss_r50_myfpn_1x_vhrvoc_v6_1/atss_r50_myfpn_1x_vhrvoc_v6.py work_dirs/atss/ATSS_myfpn/atss_r50_myfpn_1x_vhrvoc_v6_1/epoch_9.pth
 done
-
