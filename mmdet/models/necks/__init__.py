@@ -34,6 +34,9 @@ from .myfpnv12_1_4 import MyFPNv12_1_4
 from .myfpnv12_1_5 import MyFPNv12_1_5
 from .myfpnv12_1_6 import MyFPNv12_1_6
 from .myfpnv12_1_7 import MyFPNv12_1_7
+from .myfpnv12_1_8 import MyFPNv12_1_8
+from .myfpnv12_1_9 import MyFPNv12_1_9
+from .myfpnv12_1_10 import MyFPNv12_1_10
 from .myfpnv13 import MyFPNv13
 from .myfpnv14 import MyFPNv14
 __all__ = [
@@ -42,5 +45,5 @@ __all__ = [
     'CTResNetNeck', 'SSDNeck', 'YOLOXPAFPN', 'MyFPN', 'MyFPNv2', 'MyFPNv3', 'MyFPNv4',
     'MyFPNv5', 'MyFPNv6', 'MyFPNv7', 'MyFPNv8', 'MyFPNv9', 'MyFPN_1', 'MyFPNv10', 'MyFPNv11',
     'MyFPNv12','MyFPNv12_1','MyFPNv12_1_1','MyFPNv12_1_2','MyFPNv12_1_3','MyFPNv12_1_4','MyFPNv12_1_5',
-    'MyFPNv12_1_6', 'MyFPNv12_1_7', 'MyFPNv13', 'MyFPNv14'
+    'MyFPNv12_1_6', 'MyFPNv12_1_7', 'MyFPNv13', 'MyFPNv14', 'MyFPNv12_1_8', 'MyFPNv12_1_9', 'MyFPNv12_1_10'
 ]
