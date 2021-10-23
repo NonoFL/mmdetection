@@ -39,22 +39,25 @@ class SingleStageDetector(BaseDetector):
 
     def extract_feat(self, img):
         """Directly extract features from the backbone+neck."""
-        x = self.backbone(img)
-        if self.with_neck:
-            x = self.neck(x)
-        return x
-        # x_backbone = self.backbone(img)
+        # x = self.backbone(img)
         # if self.with_neck:
-        #     x_fpn = self.neck(x_backbone)
-        # return x_backbone, x_fpn
+        #     x = self.neck(x)
+        # return x
+        x_backbone = self.backbone(img)
+        if self.with_neck:
+            x_fpn = self.neck(x_backbone)
+        return x_backbone, x_fpn
 
     def forward_dummy(self, img):
         """Used for computing network flops.
 
         See `mmdetection/tools/analysis_tools/get_flops.py`
         """
-        x = self.extract_feat(img)
-        outs = self.bbox_head(x)
+        # x = self.extract_feat(img)
+        # outs = self.bbox_head(x)
+        # return outs
+        x_backbone, x_fpn = self.extract_feat(img)
+        outs = self.bbox_head(x_fpn)
         return outs
 
     def forward_train(self,
@@ -82,7 +85,8 @@ class SingleStageDetector(BaseDetector):
             dict[str, Tensor]: A dictionary of loss components.
         """
         super(SingleStageDetector, self).forward_train(img, img_metas)
-        x = self.extract_feat(img)
+        # x = self.extract_feat(img)
+        x_b, x = self.extract_feat(img)
         losses = self.bbox_head.forward_train(x, img_metas, gt_bboxes,
                                               gt_labels, gt_bboxes_ignore)
         return losses
@@ -101,23 +105,23 @@ class SingleStageDetector(BaseDetector):
                 The outer list corresponds to each image. The inner list
                 corresponds to each class.
         """
-        feat = self.extract_feat(img)
-        results_list = self.bbox_head.simple_test(
-            feat, img_metas, rescale=rescale)
-        bbox_results = [
-            bbox2result(det_bboxes, det_labels, self.bbox_head.num_classes)
-            for det_bboxes, det_labels in results_list
-        ]
-        return bbox_results
-        #NOTE featuremap
-        # feat_backbone, feat_fpn = self.extract_feat(img)
+        # feat = self.extract_feat(img)
         # results_list = self.bbox_head.simple_test(
-        #     feat_fpn, img_metas, rescale=rescale)
+        #     feat, img_metas, rescale=rescale)
         # bbox_results = [
         #     bbox2result(det_bboxes, det_labels, self.bbox_head.num_classes)
         #     for det_bboxes, det_labels in results_list
         # ]
-        # return bbox_results,feat_backbone, feat_fpn
+        # return bbox_results
+        #NOTE featuremap
+        feat_backbone, feat_fpn = self.extract_feat(img)
+        results_list = self.bbox_head.simple_test(
+            feat_fpn, img_metas, rescale=rescale)
+        bbox_results = [
+            bbox2result(det_bboxes, det_labels, self.bbox_head.num_classes)
+            for det_bboxes, det_labels in results_list
+        ]
+        return bbox_results,feat_backbone, feat_fpn
 
     def aug_test(self, imgs, img_metas, rescale=False):
         """Test function with test time augmentation.
@@ -141,7 +145,15 @@ class SingleStageDetector(BaseDetector):
             f'{self.bbox_head.__class__.__name__}' \
             ' does not support test-time augmentation'
 
-        feats = self.extract_feats(imgs)
+        # feats = self.extract_feats(imgs)
+        # results_list = self.bbox_head.aug_test(
+        #     feats, img_metas, rescale=rescale)
+        # bbox_results = [
+        #     bbox2result(det_bboxes, det_labels, self.bbox_head.num_classes)
+        #     for det_bboxes, det_labels in results_list
+        # ]
+        # return bbox_results
+        backbone, feats = self.extract_feats(imgs)
         results_list = self.bbox_head.aug_test(
             feats, img_metas, rescale=rescale)
         bbox_results = [
